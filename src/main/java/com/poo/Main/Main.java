@@ -4,6 +4,8 @@
 
 package com.poo.Main;
 
+import com.poo.model.Profesional;
+
 /**
  *
  * @author cabra
@@ -11,6 +13,10 @@ package com.poo.Main;
 public class Main {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+
+
+
+
+
     }
 }

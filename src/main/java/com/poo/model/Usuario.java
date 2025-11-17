@@ -26,30 +26,35 @@ public abstract class Usuario {
     public void setId(int id){
         this.id = id;
     }
-        public int getId(){
+    public int getId(){
             return id;
-        }
+    }
     
     public void setNombre(String nombre){
         this.nombre = nombre;
     }
-        public String getNombre(){
+    public String getNombre(){
             return nombre;
-        }
+    }
         
     public void setApellido(String apellido){
         this.apellido = apellido;
     }
-        public String getApellido(){
+    public String getApellido(){
             return apellido;
-        }
+    }
       
     public void setDni(int dni){
         this.dni = dni;
     }    
-        public int getDni(){
-            return dni;
-        }
+    public int getDni(){
+        return dni;
+    }
+
+
+
+
+
     //Metodo Abstracto
     public abstract void mostrarDatos();
     
