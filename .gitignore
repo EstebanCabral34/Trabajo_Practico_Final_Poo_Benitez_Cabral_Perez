@@ -1,0 +1,5 @@
+# Archivos de configuración de IntelliJ IDEA que deben ignorarse
+.idea/
+*.iml
+# Archivo de historial de VCS local 
+.vcs/
