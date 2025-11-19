@@ -4,7 +4,9 @@
 
 package com.poo.Main;
 
-import com.poo.model.Profesional;
+import javax.swing.SwingUtilities;
+
+import com.poo.view.MenuPrincipal;
 
 /**
  *
@@ -13,10 +15,9 @@ import com.poo.model.Profesional;
 public class Main {
 
     public static void main(String[] args) {
-
-
-
-
-
+        SwingUtilities.invokeLater(() -> {
+        MenuPrincipal menu = new MenuPrincipal();
+        menu.setVisible(true);
+    });
     }
 }
