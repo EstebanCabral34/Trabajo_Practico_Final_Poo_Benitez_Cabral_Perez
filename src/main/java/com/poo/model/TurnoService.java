@@ -65,7 +65,16 @@ public class TurnoService {
         return turnosProf;
     }
 
-
+    //Busqueda de turno por especialidad //////////////////////////////////////////////////////////////////////////
+    public List<Turno> buscarTurnoPorEspecialidad (String especialidad) {
+        List<Turno> turnosEspecialidad = new ArrayList<>();
+        for (Turno t : listaTurnos) {
+            if (t.getProfesional().getEspecialidad().equals(especialidad)) {
+                listaTurnos.add(t);
+            }
+        }
+        return turnosEspecialidad;
+    }
 
 
 
