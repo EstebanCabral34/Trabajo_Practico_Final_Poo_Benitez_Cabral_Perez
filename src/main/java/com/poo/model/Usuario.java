@@ -56,7 +56,7 @@ public abstract class Usuario {
 
 
     //Metodo Abstracto
-    public abstract void mostrarDatos();
+    public abstract void mostrarDatos(){};
     
     
 }
