@@ -17,27 +17,27 @@ public class Turno {
     private LocalDateTime fechaYHoraFin;
     private Paciente paciente;
     private Profesional profesional;
-    
+
 
     //Getters y Setters
     public void setId(int id){
         this.id = id;
     }
-        public int getId(){
+    public int getId(){
             return id;
         }
     
     public void setEstado(EstadoDeTurno estado){
         this.estado = estado;
     }
-        public EstadoDeTurno getEstado(){
+    public EstadoDeTurno getEstado(){
             return estado;
         }
     
     public void setFechaYHoraInicio(LocalDateTime fechaYHoraInicio) {
     this.fechaYHoraInicio = fechaYHoraInicio;
     }
-        public LocalDateTime getFechaYHoraInicio(){
+    public LocalDateTime getFechaYHoraInicio(){
             return fechaYHoraInicio;
         }
 
@@ -52,14 +52,14 @@ public class Turno {
         return paciente;
     }
     
-        public Profesional getProfesional(){
+    public Profesional getProfesional(){
             return profesional;
         }
 
     //Constructor
-    public Turno (int id, EstadoDeTurno estado, LocalDateTime fechaYHoraInicio, LocalDateTime fechaYHoraFin, Paciente paciente, Profesional profesional){
+    public Turno (int id, LocalDateTime fechaYHoraInicio, LocalDateTime fechaYHoraFin, Paciente paciente, Profesional profesional){
         this.id = id;
-        this.estado = estado;
+        this.estado = EstadoDeTurno.PENDIENTE;
         this.fechaYHoraInicio = fechaYHoraInicio;
         this.fechaYHoraFin = fechaYHoraFin;
         this.paciente = paciente;

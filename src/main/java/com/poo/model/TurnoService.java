@@ -3,12 +3,14 @@ package com.poo.model;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
-/**
- * Servicio que gestiona los turnos
- */
+
+//Servicio que gestiona los turnos
+
 public class TurnoService {
     private List<Turno> listaTurnos;
+    private int idTurno = 0;
 
 
 
@@ -18,14 +20,14 @@ public class TurnoService {
     } //En el futuro puede reemplazarse por la BD
 
 
-    public Turno crearTurno(Paciente paciente, Profesional profesional, LocalDateTime fechaYHoraInicio, int duracionMinutos) {
-        Turno nuevoTurno = new Turno (paciente, profesional, fechaYHoraInicio,duracionMinutos);
+    public Turno crearTurno(LocalDateTime fechaYHoraInicio, LocalDateTime fechaYHoraFin, Paciente paciente, Profesional profesional) {
+        int nuevoId = idTurno++;
+        Turno nuevoTurno = new Turno (nuevoId, fechaYHoraInicio, fechaYHoraFin, paciente, profesional);
         listaTurnos.add(nuevoTurno);
-        nuevoTurno.getId();
         return nuevoTurno;
     }
 
-    //Cambiar estado del turno
+    //Cambiar estado del turno //////////////////////////////////////////////////////////////////////////
     public void cambiarEstadoturno (Turno turno, EstadoDeTurno nuevoEstado) {
         if (turno == null) {
             throw new IllegalArgumentException("El turno no puede ser nulo");
@@ -33,7 +35,16 @@ public class TurnoService {
         turno.cambiarEstado(nuevoEstado);
     }
 
-    // Buscar turno por ID
+    //Cancelar turno //////////////////////////////////////////////////////////////////////////
+    public void cancelarTurno (Turno turno) {
+        if (turno == null) {
+            throw new IllegalArgumentException("El turno no puede ser nulo");
+        }
+        cambiarEstadoturno (turno, EstadoDeTurno.CANCELADO);
+        //Mensaje de notificacion por turno cancelado
+    }
+
+    // Buscar turno por ID //////////////////////////////////////////////////////////////////////////
     public Turno buscarTurnoPorId(int id){
         for (Turno t : listaTurnos) {
             if (t.getId() == id) {
@@ -43,9 +54,16 @@ public class TurnoService {
         return null;
     }
 
-
-
-
+    //Busqueda de turno por profesional //////////////////////////////////////////////////////////////////////////
+    public List<Turno> buscarTurnosPorProfesional(Profesional profesional) {
+        List<Turno> turnosProf = new ArrayList<>();
+        for (Turno t : listaTurnos) {
+            if (t.getProfesional().equals(profesional)) {
+                listaTurnos.add(t);
+            }
+        }
+        return turnosProf;
+    }
 
 
 
