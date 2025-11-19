@@ -47,9 +47,5 @@ public class Paciente extends Usuario {
         historialturnos.add(turno);
     }
      
-    //Metodo Heredado
-    @Override
-    public void mostrarDatos(){
-        System.out.println("Paciente: " + getNombre() + " " + getApellido() + " | DNI: " + getDni() + " | Telefono: " + getTelefono() + " | ObraSocial: " + getObraSocial());
-    }
+
 }
