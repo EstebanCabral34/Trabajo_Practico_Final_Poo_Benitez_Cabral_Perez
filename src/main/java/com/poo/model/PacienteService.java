@@ -14,8 +14,8 @@ public class PacienteService {
     }
 
     public Paciente altaPaciente(String nombre, String apellido, int dni, String telefono, String obraSocial){
-        if (nombre == null || dni == 0) {
-            throw new IllegalArgumentException("El nombre y DNI del paciente son obligatorios.");
+        if (nombre == null || apellido == null || dni == 0) {
+            throw new IllegalArgumentException("El nombre, apellido y DNI del paciente son obligatorios.");
         }
         if (buscarPacientePorDni (dni) != null) {
             throw new IllegalArgumentException("ERROR: Ya existe un paciente con el DNI:" + dni + ".");
@@ -27,10 +27,14 @@ public class PacienteService {
     }
 
 
-    //Getter de listaPacientes ///////////////////////////////////////////////////////////////////////
+    //Getters ///////////////////////////////////////////////////////////////////////
 
     public List<Paciente> getListaPacientes(){
         return listaPacientes;
+    }
+
+    public int getProxId() {
+        return proxId;
     }
 
     // Buscar paciente por DNI ///////////////////////////////////////////////////////////////////////
