@@ -14,7 +14,7 @@ public class PacienteService {
     }
 
     public Paciente altaPaciente(String nombre, String apellido, int dni, String telefono, String obraSocial){
-        if (nombre == null || apellido == null || dni == 0) {
+        if (nombre == null || nombre.isEmpty() || apellido == null || apellido.isEmpty() || dni == 0) {
             throw new IllegalArgumentException("El nombre, apellido y DNI del paciente son obligatorios.");
         }
         if (buscarPacientePorDni (dni) != null) {

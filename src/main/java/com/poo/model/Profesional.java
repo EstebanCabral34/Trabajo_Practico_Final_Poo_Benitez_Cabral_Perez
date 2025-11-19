@@ -37,9 +37,5 @@ public class Profesional extends Usuario {
             return agendas;
         }
     
-    //Metodo Heredado
-    @Override
-    public void mostrarDatos(){
-        System.out.println("Profesional: " + getNombre() + " " + getApellido() + " | Especialidad: " + getEspecialidad() + " | DNI: " + getDni());
-    }
+
 }

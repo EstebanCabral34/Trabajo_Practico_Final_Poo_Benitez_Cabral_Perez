@@ -15,8 +15,8 @@ public class ProfesionalService {
 
     // Alta de profesional ///////////////////////////////////////////////////////////////////////////////////////
     public Profesional altaProfesional (String nombre, String apellido, int dni, String especialidad, List <Agenda> agendas) {
-        if (nombre == null || apellido == null || dni <= 0){
-            throw new IllegalArgumentException("El nombre, apellido y dni del profesional son obligatorios.");
+        if (nombre == null || nombre.isEmpty() || apellido == null || apellido.isEmpty() || especialidad == null || especialidad.isEmpty() || dni <= 0){
+            throw new IllegalArgumentException("El nombre, apellido, dni y especialidad del profesional son obligatorios.");
         }
         if (buscarProfesionalPorDni(dni) != null) {
             throw new IllegalArgumentException("ERROR: Ya existe un profesional con el DNi:" + dni + ".");
@@ -26,6 +26,7 @@ public class ProfesionalService {
         return nuevoProfesional;
     }
 
+    // Baja de profesional /////////////////////////////////////////////////////////////
     // Getters///////////////////////////////////////////////////////////////////////////////////////
     public List<Profesional> getListaProfesionales() {
         return listaProfesionales;
