@@ -11,6 +11,7 @@ import java.util.List;
 public class TurnoService {
     private List<Turno> listaTurnos;
     private int idTurno = 0;
+    private ProfesionalService profesionalService;
 
 
 
@@ -18,6 +19,11 @@ public class TurnoService {
     public TurnoService() {
         this.listaTurnos = new ArrayList<>();
     } //En el futuro puede reemplazarse por la BD
+
+    public TurnoService(ProfesionalService profesionalService) {
+        this.listaTurnos = new ArrayList<>();
+        this.profesionalService = profesionalService;
+    }
 
 
     public Turno crearTurno(LocalDateTime fechaYHoraInicio, LocalDateTime fechaYHoraFin, Paciente paciente, Profesional profesional) {

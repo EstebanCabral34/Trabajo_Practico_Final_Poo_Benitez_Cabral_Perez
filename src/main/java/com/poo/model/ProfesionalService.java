@@ -27,6 +27,24 @@ public class ProfesionalService {
     }
 
     // Baja de profesional /////////////////////////////////////////////////////////////
+    public boolean bajaProfesional (int dni, TurnoService turnoService) {
+        Profesional profAEliminar =  buscarProfesionalPorDni(dni);
+
+        if (profAEliminar == null) {
+            throw new IllegalArgumentException("Error: No existe el profesional con DNi:" + dni);
+        }
+        List<Turno> turnosProfesional = turnoService.buscarTurnosPorProfesional(profAEliminar); //creamos una lista con los turnos asignados al Profesional a eliminar.
+
+        for (Turno t : turnosProfesional) { //En caso que el Profesional tenga turnos asignados, se lo comunicamos al usuario.
+            EstadoDeTurno estado = t.getEstado();
+            if (estado == EstadoDeTurno.PENDIENTE || estado == EstadoDeTurno.CONFIRMADO) {
+                throw new IllegalStateException("Error: El profesional tiene turnos activos");
+            }
+        }
+        listaProfesionales.remove(profAEliminar); // Eliminamos al profesional de la lista.
+        return true;
+    }
+
     // Getters///////////////////////////////////////////////////////////////////////////////////////
     public List<Profesional> getListaProfesionales() {
         return listaProfesionales;
