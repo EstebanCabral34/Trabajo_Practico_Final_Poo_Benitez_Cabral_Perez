@@ -45,6 +45,25 @@ public class ProfesionalService {
         return true;
     }
 
+    // Modificar profesional ///////////////////////////////////////////////////////////////////////////////////////
+    public Profesional modificarProfesional (int dni, String nuevoNombre, String nuevoApellido, String nuevaEspecialidad) {
+        Profesional profAModificar = buscarProfesionalPorDni(dni);
+        if (profAModificar == null) {
+            throw new IllegalArgumentException("Error: No existe el profesional con DNi:" + dni);
+        }
+        if (nuevoNombre != null && !nuevoNombre.isEmpty()) {
+            profAModificar.setNombre(nuevoNombre);
+        }
+        if (nuevoApellido != null && !nuevoApellido.isEmpty()) {
+            profAModificar.setApellido(nuevoApellido);
+        }
+        if (nuevaEspecialidad != null && !nuevaEspecialidad.isEmpty()) {
+            profAModificar.setEspecialidad(nuevaEspecialidad);
+        }
+        return profAModificar;
+    }
+
+
     // Getters///////////////////////////////////////////////////////////////////////////////////////
     public List<Profesional> getListaProfesionales() {
         return listaProfesionales;
