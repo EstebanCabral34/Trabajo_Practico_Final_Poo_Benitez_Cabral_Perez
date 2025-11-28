@@ -63,9 +63,15 @@ public class TurnoService {
     //Busqueda de turno por profesional //////////////////////////////////////////////////////////////////////////
     public List<Turno> buscarTurnosPorProfesional(Profesional profesional) {
         List<Turno> turnosProf = new ArrayList<>();
+        
+        // Si profesional es null, retorna TODOS los turnos
+        if (profesional == null) {
+            return new ArrayList<>(listaTurnos);
+        }
+        
         for (Turno t : listaTurnos) {
             if (t.getProfesional().equals(profesional)) {
-                listaTurnos.add(t);
+                turnosProf.add(t);  // ← CORREGIDO: antes decía listaTurnos.add(t)
             }
         }
         return turnosProf;
@@ -75,14 +81,29 @@ public class TurnoService {
     public List<Turno> buscarTurnoPorEspecialidad (String especialidad) {
         List<Turno> turnosEspecialidad = new ArrayList<>();
         for (Turno t : listaTurnos) {
-            if (t.getProfesional().getEspecialidad().equals(especialidad)) {
-                listaTurnos.add(t);
+            if (t.getProfesional().getEspecialidad().equalsIgnoreCase(especialidad)) {
+                turnosEspecialidad.add(t);  // ← CORREGIDO: antes decía listaTurnos.add(t)
             }
         }
         return turnosEspecialidad;
     }
-
-
-
-
+    
+    //Busqueda de turno por paciente //////////////////////////////////////////////////////////////////////////
+    public List<Turno> buscarTurnosPorPaciente(Paciente paciente) {
+        List<Turno> turnosPaciente = new ArrayList<>();
+        if (paciente == null) {
+            return turnosPaciente;
+        }
+        for (Turno t : listaTurnos) {
+            if (t.getPaciente().equals(paciente)) {
+                turnosPaciente.add(t);
+            }
+        }
+        return turnosPaciente;
+    }
+    
+    // Getter para lista completa //////////////////////////////////////////////////////////////////////////
+    public List<Turno> getListaTurnos() {
+        return listaTurnos;
+    }
 }

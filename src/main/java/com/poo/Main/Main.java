@@ -4,9 +4,9 @@
 
 package com.poo.Main;
 
-import com.poo.model.*;
+import javax.swing.SwingUtilities;
 
-import java.time.LocalDateTime;
+import com.poo.view.MenuPrincipal;
 
 /**
  *
@@ -15,9 +15,9 @@ import java.time.LocalDateTime;
 public class Main {
 
     public static void main(String[] args) {
-
-
-
-
+        SwingUtilities.invokeLater(() -> {
+        MenuPrincipal menu = new MenuPrincipal();
+        menu.setVisible(true);
+    });
     }
 }
