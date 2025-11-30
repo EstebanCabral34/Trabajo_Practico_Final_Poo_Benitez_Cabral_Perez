@@ -1,6 +1,7 @@
 package com.poo.model;
 
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,7 @@ public class TurnoService {
     private List<Turno> listaTurnos;
     private int idTurno = 1;
     private ProfesionalService profesionalService;
+    private static final int HORAS_MIN_ANTICIPACION = 24;
 
 
 
@@ -66,6 +68,15 @@ public class TurnoService {
         if (turno == null) {
             throw new IllegalArgumentException("El turno no puede ser nulo");
         }
+        LocalDateTime ahora = LocalDateTime.now();
+        LocalDateTime inicioTurno = turno.getFechaYHoraInicio();
+        Duration tiempoRestante = Duration.between(ahora, inicioTurno);
+
+        //validamos que al momento de cancelar hayan las suficientes horas de anticipacion.
+        if (tiempoRestante.toHours() < HORAS_MIN_ANTICIPACION) {
+            throw new IllegalStateException("Error: Las cancelaciones deben realizarse al menos con " +  HORAS_MIN_ANTICIPACION + " horas de anticipacion.");
+        }
+
         cambiarEstadoturno (turno, EstadoDeTurno.CANCELADO);
         //Mensaje de notificacion por turno cancelado
     }
