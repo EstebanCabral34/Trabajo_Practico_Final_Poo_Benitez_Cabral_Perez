@@ -7,7 +7,7 @@
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.release>25</maven.compiler.release>
+        <maven.compiler.release>24</maven.compiler.release>
         <exec.mainClass>com.poo.trabajo_practico_final_poo_benitez_cabral_perez.Trabajo_Practico_Final_Poo_Benitez_Cabral_Perez</exec.mainClass>
     </properties>
 </project>

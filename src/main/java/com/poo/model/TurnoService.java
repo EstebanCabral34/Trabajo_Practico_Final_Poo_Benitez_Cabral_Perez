@@ -10,7 +10,7 @@ import java.util.List;
 
 public class TurnoService {
     private List<Turno> listaTurnos;
-    private int idTurno = 0;
+    private int idTurno = 1;
     private ProfesionalService profesionalService;
 
 
@@ -25,12 +25,32 @@ public class TurnoService {
         this.profesionalService = profesionalService;
     }
 
-
+    //Crear Turno ////////////////////////////////////////////////////////////////////////////////////////
     public Turno crearTurno(LocalDateTime fechaYHoraInicio, LocalDateTime fechaYHoraFin, Paciente paciente, Profesional profesional) {
+
+        Turno nuevoTurno = new Turno (-1, fechaYHoraInicio, fechaYHoraFin, paciente, profesional); //creamos turno con ID = -1, para que nunca coincida con el ID real y verificar solapamiento de fechas y horas.
+        if (haySolapamiento(nuevoTurno, profesional)) {
+            throw new IllegalArgumentException("Error: el horario seleccionado se solapa con un turno existente del profesional.");
+        }
+        //Si pasa la validacion, creamos el turno final con el ID correspondiente.
         int nuevoId = idTurno++;
-        Turno nuevoTurno = new Turno (nuevoId, fechaYHoraInicio, fechaYHoraFin, paciente, profesional);
-        listaTurnos.add(nuevoTurno);
-        return nuevoTurno;
+        Turno turnoFinal = new Turno(nuevoId, fechaYHoraInicio, fechaYHoraFin, paciente, profesional);
+        listaTurnos.add(turnoFinal);
+        return turnoFinal;
+    }
+
+    // Metodo privado para verificar solapamientos
+    private boolean haySolapamiento (Turno nuevoTurno, Profesional profesional) {
+        List<Turno> turnosDelProf = buscarTurnosPorProfesional(profesional);
+        for (Turno turnoExistente : turnosDelProf) { //verificamos entre los turnos existentes del Profesional
+            EstadoDeTurno estado = turnoExistente.getEstado();
+            if (estado != EstadoDeTurno.CANCELADO && estado != EstadoDeTurno.AUSENTE) {
+                if (nuevoTurno.seSolapaCon(turnoExistente)) {
+                    return true; //Hay solapamiento
+                }
+            }
+        }
+        return false; // No hay solapamiento
     }
 
     //Cambiar estado del turno //////////////////////////////////////////////////////////////////////////
@@ -70,7 +90,7 @@ public class TurnoService {
         }
         
         for (Turno t : listaTurnos) {
-            if (t.getProfesional().equals(profesional)) {
+            if (t.getProfesional().getId() == profesional.getId()) {
                 turnosProf.add(t);  // ← CORREGIDO: antes decía listaTurnos.add(t)
             }
         }
