@@ -28,18 +28,17 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 
-import com.poo.model.EstadoDeTurno;
+import com.poo.controller.PacienteController;
+import com.poo.controller.ProfesionalController;
+import com.poo.controller.TurnoController;
 import com.poo.model.Paciente;
-import com.poo.model.PacienteService;
 import com.poo.model.Profesional;
-import com.poo.model.ProfesionalService;
 import com.poo.model.Turno;
-import com.poo.model.TurnoService;
 
 public class MenuPrincipal extends JFrame {
-    private ProfesionalService profesionalService;
-    private PacienteService pacienteService;
-    private TurnoService turnoService;
+    private ProfesionalController profesionalController;
+    private PacienteController pacienteController;
+    private TurnoController turnoController;
     
     // Variables para actualizar listas
     private Runnable actualizarListaPacientes;
@@ -56,10 +55,10 @@ public class MenuPrincipal extends JFrame {
     private final Color COLOR_BOTON = new Color(60, 60, 60);
     
     public MenuPrincipal() {
-        // Inicializar servicios
-        profesionalService = new ProfesionalService();
-        pacienteService = new PacienteService();
-        turnoService = new TurnoService();
+        // Inicializar controladores (ahora usan BD)
+        profesionalController = new ProfesionalController();
+        pacienteController = new PacienteController();
+        turnoController = new TurnoController();
         
         // Configurar ventana principal
         setTitle("Sistema de Gestión de Turnos Médicos");
@@ -92,10 +91,15 @@ public class MenuPrincipal extends JFrame {
         panel.setBackground(new Color(45, 52, 54));
         panel.setBorder(new EmptyBorder(15, 20, 15, 20));
         
-        JLabel titulo = new JLabel("Sistema de Gestión");
+        JLabel titulo = new JLabel("Sistema de Gestión de Turnos");
         titulo.setFont(new Font("Segoe UI", Font.BOLD, 24));
         titulo.setForeground(COLOR_TEXTO);
         panel.add(titulo, BorderLayout.WEST);
+        
+        JLabel subtitulo = new JLabel("Base de Datos SQLite");
+        subtitulo.setFont(new Font("Segoe UI", Font.ITALIC, 12));
+        subtitulo.setForeground(new Color(150, 150, 150));
+        panel.add(subtitulo, BorderLayout.EAST);
         
         return panel;
     }
@@ -144,10 +148,10 @@ public class MenuPrincipal extends JFrame {
         scrollPacientes.setBorder(BorderFactory.createLineBorder(COLOR_BOTON));
         panelLista.add(scrollPacientes, BorderLayout.CENTER);
         
-        // Actualizar lista inicial
+        // Actualizar lista inicial (ahora desde BD)
         actualizarListaPacientes = () -> {
             modeloPacientes.clear();
-            for (Paciente p : pacienteService.getListaPacientes()) {
+            for (Paciente p : pacienteController.obtenerTodos()) {
                 modeloPacientes.addElement(formatearPaciente(p));
             }
         };
@@ -161,10 +165,12 @@ public class MenuPrincipal extends JFrame {
                 String tel = obtenerTexto(txtTelPac);
                 String os = obtenerTexto(txtObraSocial);
                 
-                Paciente p = pacienteService.altaPaciente(nombre, apellido, dni, tel, os);
+                Paciente p = pacienteController.crearPaciente(nombre, apellido, dni, tel, os);
                 JOptionPane.showMessageDialog(this, "Paciente agregado exitosamente\nID: " + p.getId());
                 limpiarCampos(txtNombrePac, txtApellidoPac, txtDniPac, txtTelPac, txtObraSocial);
                 actualizarListaPacientes.run();
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Error: El DNI debe ser un número válido", "Error", JOptionPane.ERROR_MESSAGE);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -179,7 +185,7 @@ public class MenuPrincipal extends JFrame {
         btnBuscar.addActionListener(e -> {
             try {
                 int dni = Integer.parseInt(obtenerTexto(txtBuscarDni));
-                Paciente p = pacienteService.buscarPacientePorDni(dni);
+                Paciente p = pacienteController.buscarPorDni(dni);
                 if (p != null) {
                     String info = String.format("Paciente encontrado:\nID: %d\nNombre: %s %s\nDNI: %d\nTeléfono: %s\nObra Social: %s",
                             p.getId(), p.getNombre(), p.getApellido(), p.getDni(), p.getTelefono(), p.getObraSocial());
@@ -254,7 +260,7 @@ public class MenuPrincipal extends JFrame {
         
         actualizarListaProfesionales = () -> {
             modeloProfesionales.clear();
-            for (Profesional p : profesionalService.getListaProfesionales()) {
+            for (Profesional p : profesionalController.obtenerTodos()) {
                 modeloProfesionales.addElement(formatearProfesional(p));
             }
         };
@@ -267,10 +273,12 @@ public class MenuPrincipal extends JFrame {
                 int dni = Integer.parseInt(obtenerTexto(txtDniProf));
                 String esp = obtenerTexto(txtEspecialidad);
                 
-                Profesional p = profesionalService.altaProfesional(nombre, apellido, dni, esp, null);
+                Profesional p = profesionalController.crearProfesional(nombre, apellido, dni, esp);
                 JOptionPane.showMessageDialog(this, "Profesional agregado exitosamente\nID: " + p.getId());
                 limpiarCampos(txtNombreProf, txtApellidoProf, txtDniProf, txtEspecialidad);
                 actualizarListaProfesionales.run();
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Error: El DNI debe ser un número válido", "Error", JOptionPane.ERROR_MESSAGE);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -285,7 +293,7 @@ public class MenuPrincipal extends JFrame {
         btnBuscarProf.addActionListener(e -> {
             try {
                 int dni = Integer.parseInt(obtenerTexto(txtBuscarDniProf));
-                Profesional p = profesionalService.buscarProfesionalPorDni(dni);
+                Profesional p = profesionalController.buscarPorDni(dni);
                 if (p != null) {
                     String info = String.format("Profesional encontrado:\nID: %d\nNombre: %s %s\nDNI: %d\nEspecialidad: %s",
                             p.getId(), p.getNombre(), p.getApellido(), p.getDni(), p.getEspecialidad());
@@ -359,7 +367,7 @@ public class MenuPrincipal extends JFrame {
         
         actualizarListaTurnos = () -> {
             modeloTurnos.clear();
-            for (Turno t : turnoService.getListaTurnos()) {
+            for (Turno t : turnoController.obtenerTodos()) {
                 modeloTurnos.addElement(formatearTurno(t));
             }
         };
@@ -370,8 +378,8 @@ public class MenuPrincipal extends JFrame {
                 int dniPac = Integer.parseInt(obtenerTexto(txtDniPacTurno));
                 int dniProf = Integer.parseInt(obtenerTexto(txtDniProfTurno));
                 
-                Paciente pac = pacienteService.buscarPacientePorDni(dniPac);
-                Profesional prof = profesionalService.buscarProfesionalPorDni(dniProf);
+                Paciente pac = pacienteController.buscarPorDni(dniPac);
+                Profesional prof = profesionalController.buscarPorDni(dniProf);
                 
                 if (pac == null || prof == null) {
                     JOptionPane.showMessageDialog(this, "Paciente o profesional no encontrado", "Error", JOptionPane.ERROR_MESSAGE);
@@ -382,7 +390,7 @@ public class MenuPrincipal extends JFrame {
                 LocalDateTime fechaInicio = LocalDateTime.parse(txtFechaTurno.getText(), formatter);
                 LocalDateTime fechaFin = fechaInicio.plusHours(1);
                 
-                Turno t = turnoService.crearTurno(fechaInicio, fechaFin, pac, prof);
+                Turno t = turnoController.crearTurno(fechaInicio, fechaFin, pac, prof);
                 JOptionPane.showMessageDialog(this, "Turno creado exitosamente\nID: " + t.getId());
                 limpiarCampos(txtDniPacTurno, txtDniProfTurno);
                 txtFechaTurno.setText(LocalDateTime.now().plusDays(1).format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
@@ -404,14 +412,9 @@ public class MenuPrincipal extends JFrame {
         btnCancelar.addActionListener(e -> {
             try {
                 int id = Integer.parseInt(obtenerTexto(txtIdTurno));
-                Turno t = turnoService.buscarTurnoPorId(id);
-                if (t != null) {
-                    turnoService.cancelarTurno(t);
-                    JOptionPane.showMessageDialog(this, "Turno cancelado");
-                    actualizarListaTurnos.run();
-                } else {
-                    JOptionPane.showMessageDialog(this, "Turno no encontrado", "Error", JOptionPane.ERROR_MESSAGE);
-                }
+                turnoController.cancelarTurno(id);
+                JOptionPane.showMessageDialog(this, "Turno cancelado");
+                actualizarListaTurnos.run();
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -421,14 +424,9 @@ public class MenuPrincipal extends JFrame {
         btnConfirmar.addActionListener(e -> {
             try {
                 int id = Integer.parseInt(obtenerTexto(txtIdTurno));
-                Turno t = turnoService.buscarTurnoPorId(id);
-                if (t != null) {
-                    turnoService.cambiarEstadoturno(t, EstadoDeTurno.CONFIRMADO);
-                    JOptionPane.showMessageDialog(this, "Turno confirmado");
-                    actualizarListaTurnos.run();
-                } else {
-                    JOptionPane.showMessageDialog(this, "Turno no encontrado", "Error", JOptionPane.ERROR_MESSAGE);
-                }
+                turnoController.confirmarTurno(id);
+                JOptionPane.showMessageDialog(this, "Turno confirmado");
+                actualizarListaTurnos.run();
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -592,7 +590,7 @@ public class MenuPrincipal extends JFrame {
     }
     
     public static void main(String[] args) {
-        // Configurar
+        // Configurar Look and Feel
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
