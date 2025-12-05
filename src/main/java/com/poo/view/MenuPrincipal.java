@@ -258,10 +258,10 @@ public class MenuPrincipal extends JFrame {
         // Modificar Profesional
         JPanel panelModificar = crearPanelSeccion("Modificar Profesional");
         JTextField txtIdModificar = crearCampoTexto("ID del profesional a modificar");
-        JTextField txtNuevoNombre = crearCampoTexto("Nuevo nombre (opcional)");
-        JTextField txtNuevoApellido = crearCampoTexto("Nuevo apellido (opcional)");
+        JTextField txtNuevoNombre = crearCampoTexto("Nuevo nombre (obligatorio)");
+        JTextField txtNuevoApellido = crearCampoTexto("Nuevo apellido (obligatorio)");
         JTextField txtNuevoDni = crearCampoTexto("Nuevo DNI (opcional)");
-        JTextField txtNuevaEspecialidad = crearCampoTexto("Nueva especialidad (opcional)");
+        JTextField txtNuevaEspecialidad = crearCampoTexto("Nueva especialidad (obligatorio)");
 
         JButton btnModificar = crearBoton("✏️ Modificar Profesional", new Color(241, 196, 15)); // Amarillo
 
