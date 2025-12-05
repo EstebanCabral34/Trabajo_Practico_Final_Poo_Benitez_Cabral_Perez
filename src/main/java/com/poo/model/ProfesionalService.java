@@ -21,6 +21,12 @@ public class ProfesionalService {
         if (buscarProfesionalPorDni(dni) != null) {
             throw new IllegalArgumentException("ERROR: Ya existe un profesional con el DNi:" + dni + ".");
         }
+        if (String.valueOf(dni).length() <= 6 || String.valueOf(dni).length() >= 9) {
+            throw new IllegalArgumentException("El DNI es inválido: debe tener al menos 7 números.");
+        }
+        if (buscarProfesionalPorDni(dni) != null) {
+            throw new IllegalArgumentException("Ya existe un profesional registrado con el DNI " + dni + ".");
+        }
         Profesional nuevoProfesional = new Profesional(proxId++, nombre, apellido, dni, especialidad, agendas);
         listaProfesionales.add(nuevoProfesional);
         return nuevoProfesional;
