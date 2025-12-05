@@ -13,14 +13,14 @@ import java.util.List;
  */
 public class Paciente extends Usuario {
     private String telefono;
-    private String obrasocial;
+    private String obraSocial;
     private List<Turno> historialturnos;
     
     //Constructor
-    public Paciente(int id, String nombre, String apellido, int dni, String telefono, String obrasocial, List<Turno> historialturnos){
+    public Paciente(int id, String nombre, String apellido, int dni, String telefono, String obraSocial, List<Turno> historialturnos){
         super(id, nombre, apellido, dni);
             this.telefono = telefono;
-            this.obrasocial = obrasocial;
+            this.obraSocial = obraSocial;
             this.historialturnos = (historialturnos != null) ? historialturnos : new ArrayList<>();
     }
     //Getters y Setters
@@ -31,11 +31,11 @@ public class Paciente extends Usuario {
             return telefono;
         }
     
-    public void setObrasocial(String obrasocial){
-        this.obrasocial = obrasocial;
+    public void setObraSocial(String obraSocial){
+        this.obraSocial = obraSocial;
     }
-        public String getObrasocial(){
-            return obrasocial;
+        public String getObraSocial(){
+            return obraSocial;
         }
     
     public List<Turno> getHistorialTurnos(){
@@ -47,9 +47,5 @@ public class Paciente extends Usuario {
         historialturnos.add(turno);
     }
      
-    //Metodo Heredado
-    @Override
-    public void mostrarDatos(){
-        System.out.println("Paciente: " + getNombre() + " " + getApellido() + " | DNI: " + getDni() + " | Telefono: " + getTelefono() + " | ObraSocial: " + getObrasocial());
-    }
+
 }

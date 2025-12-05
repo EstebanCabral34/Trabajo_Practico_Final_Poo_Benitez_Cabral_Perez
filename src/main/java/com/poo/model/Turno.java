@@ -13,52 +13,73 @@ import java.time.LocalDateTime;
 public class Turno {
     private int id;
     private EstadoDeTurno estado;
-    private LocalDateTime fechaYHora;
+    private LocalDateTime fechaYHoraInicio;
+    private LocalDateTime fechaYHoraFin;
     private Paciente paciente;
     private Profesional profesional;
-    
-    //Constructor
-    public Turno (int id, EstadoDeTurno estado, LocalDateTime fechaYHora, Paciente paciente, Profesional profesional){
-        this.id = id;
-        this.estado = estado;
-        this.fechaYHora = fechaYHora;
-        this.paciente = paciente;
-        this.profesional = profesional;
-    }
-       
+
+
     //Getters y Setters
     public void setId(int id){
         this.id = id;
     }
-        public int getId(){
+    public int getId(){
             return id;
         }
     
     public void setEstado(EstadoDeTurno estado){
         this.estado = estado;
     }
-        public EstadoDeTurno getEstado(){
+    public EstadoDeTurno getEstado(){
             return estado;
         }
     
-    public void setFechaYHora(LocalDateTime fechaYHora) {
-    this.fechaYHora = fechaYHora;
+    public void setFechaYHoraInicio(LocalDateTime fechaYHoraInicio) {
+    this.fechaYHoraInicio = fechaYHoraInicio;
     }
-        public LocalDateTime getFechaYHora(){
-            return fechaYHora;
+    public LocalDateTime getFechaYHoraInicio(){
+            return fechaYHoraInicio;
         }
-    
+
+    public void setfechaYHoraFin(LocalDateTime fechaYHoraFin) {
+        this.fechaYHoraFin = fechaYHoraFin;
+    }
+    public LocalDateTime getfechaYHoraFin(){
+        return fechaYHoraFin;
+    }
+
     public Paciente getPaciente(){
         return paciente;
     }
     
-        public Profesional getProfesional(){
+    public Profesional getProfesional(){
             return profesional;
         }
-    
+
+    //Constructor
+    public Turno (int id, LocalDateTime fechaYHoraInicio, LocalDateTime fechaYHoraFin, Paciente paciente, Profesional profesional){
+        this.id = id;
+        this.estado = EstadoDeTurno.PENDIENTE;
+        this.fechaYHoraInicio = fechaYHoraInicio;
+        this.fechaYHoraFin = fechaYHoraFin;
+        this.paciente = paciente;
+        this.profesional = profesional;
+    }
+
+
     //Cambiar estado de turno
     public void cambiarEstado(EstadoDeTurno nuevoEstado) {
     this.estado = nuevoEstado;
     }
-    
+
+    //Verificar solapamiento de turnos
+    public boolean seSolapaCon (Turno turno){
+        if (this.id == turno.getId()){ //validamos que si los turnos tienen mismo ID, no se solapan
+            return false;
+        }
+        //validacion de las fechas
+        return this.fechaYHoraInicio.isBefore(turno.getfechaYHoraFin()) &&
+                this.fechaYHoraFin.isAfter(turno.fechaYHoraInicio);
+    }
+
 }

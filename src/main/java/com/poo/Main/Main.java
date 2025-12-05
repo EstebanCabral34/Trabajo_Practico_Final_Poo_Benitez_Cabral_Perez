@@ -4,6 +4,10 @@
 
 package com.poo.Main;
 
+import javax.swing.SwingUtilities;
+
+import com.poo.view.MenuPrincipal;
+
 /**
  *
  * @author cabra
@@ -11,6 +15,9 @@ package com.poo.Main;
 public class Main {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        SwingUtilities.invokeLater(() -> {
+        MenuPrincipal menu = new MenuPrincipal();
+        menu.setVisible(true);
+    });
     }
 }
