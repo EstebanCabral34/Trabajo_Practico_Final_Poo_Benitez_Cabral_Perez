@@ -144,20 +144,6 @@ public class TurnoDAO {
         return null;
     }
 
-    // Cambia el estado de un turno sin cargar todos los datos del turno
-    // public boolean cambiarEstadoDirecto(int turnoId, EstadoDeTurno nuevoEstado) throws SQLException {
-    //     String sql = "UPDATE turnos SET estado = ? WHERE id = ?";
-
-    //     try (Connection conn = dbManager.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-    //         pstmt.setString(1, nuevoEstado.name());
-    //         pstmt.setInt(2, turnoId);
-
-    //         int affectedRows = pstmt.executeUpdate();
-    //         return affectedRows > 0;
-    //     }
-    // }
-
     //  Obtiene todos los turnos
     public List<Turno> obtenerTodos() throws SQLException {
         List<Turno> turnos = new ArrayList<>();
@@ -221,7 +207,6 @@ public class TurnoDAO {
     }
 
     // Busca turnos por paciente
- 
     public List<Turno> buscarPorPaciente(int pacienteId) throws SQLException {
         List<Turno> turnos = new ArrayList<>();
         String sql = "SELECT * FROM turnos WHERE paciente_id = ? ORDER BY fecha_hora_inicio DESC";
@@ -374,5 +359,81 @@ public class TurnoDAO {
         turno.setEstado(EstadoDeTurno.valueOf(rs.getString("estado")));
 
         return turno;
+    }
+
+    /**
+     * Verifica si existe un turno para el profesional en un rango de 30 minutos
+     */
+    public boolean existeTurnoEnHorarioProfesional(int profesionalId, LocalDateTime fechaHora, Integer turnoIdExcluir) throws SQLException {
+        LocalDateTime fechaInicioMenos30 = fechaHora.minusMinutes(30);
+        LocalDateTime fechaInicioMas30 = fechaHora.plusMinutes(30);
+
+        String sql = "SELECT COUNT(*) FROM turnos WHERE profesional_id = ? "
+                + "AND ((fecha_hora_inicio BETWEEN ? AND ?) "
+                + "OR (fecha_hora_fin BETWEEN ? AND ?)) "
+                + "AND estado != 'CANCELADO'";
+
+        if (turnoIdExcluir != null) {
+            sql += " AND id != ?";
+        }
+
+        try (Connection conn = dbManager.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            int paramIndex = 1;
+            pstmt.setInt(paramIndex++, profesionalId);
+            pstmt.setTimestamp(paramIndex++, Timestamp.valueOf(fechaInicioMenos30));
+            pstmt.setTimestamp(paramIndex++, Timestamp.valueOf(fechaInicioMas30));
+            pstmt.setTimestamp(paramIndex++, Timestamp.valueOf(fechaInicioMenos30));
+            pstmt.setTimestamp(paramIndex++, Timestamp.valueOf(fechaInicioMas30));
+
+            if (turnoIdExcluir != null) {
+                pstmt.setInt(paramIndex, turnoIdExcluir);
+            }
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Verifica si existe un turno para el paciente en un rango de 30 minutos
+     */
+    public boolean existeTurnoEnHorarioPaciente(int pacienteId, LocalDateTime fechaHora, Integer turnoIdExcluir) throws SQLException {
+        LocalDateTime fechaInicioMenos30 = fechaHora.minusMinutes(30);
+        LocalDateTime fechaInicioMas30 = fechaHora.plusMinutes(30);
+
+        String sql = "SELECT COUNT(*) FROM turnos WHERE paciente_id = ? "
+                + "AND ((fecha_hora_inicio BETWEEN ? AND ?) "
+                + "OR (fecha_hora_fin BETWEEN ? AND ?)) "
+                + "AND estado != 'CANCELADO'";
+
+        if (turnoIdExcluir != null) {
+            sql += " AND id != ?";
+        }
+
+        try (Connection conn = dbManager.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            int paramIndex = 1;
+            pstmt.setInt(paramIndex++, pacienteId);
+            pstmt.setTimestamp(paramIndex++, Timestamp.valueOf(fechaInicioMenos30));
+            pstmt.setTimestamp(paramIndex++, Timestamp.valueOf(fechaInicioMas30));
+            pstmt.setTimestamp(paramIndex++, Timestamp.valueOf(fechaInicioMenos30));
+            pstmt.setTimestamp(paramIndex++, Timestamp.valueOf(fechaInicioMas30));
+
+            if (turnoIdExcluir != null) {
+                pstmt.setInt(paramIndex, turnoIdExcluir);
+            }
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        }
+        return false;
     }
 }

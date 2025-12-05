@@ -1,11 +1,11 @@
 package com.poo.controller;
 
-import com.poo.model.Profesional;
-import com.poo.persistence.ProfesionalDAO;
-
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.poo.model.Profesional;
+import com.poo.persistence.ProfesionalDAO;
 
 /**
  * Controlador para gestionar la lógica de negocio de Profesionales
@@ -56,6 +56,83 @@ public class ProfesionalController {
 
         } catch (SQLException e) {
             throw new RuntimeException("Error al crear el profesional: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Modifica un profesional existente
+     */
+    public Profesional modificarProfesional(int id, String nuevoNombre, String nuevoApellido, 
+                                          int nuevoDni, String nuevaEspecialidad) {
+        try {
+            // Buscar el profesional existente
+            Profesional profesional = profesionalDAO.buscarPorId(id);
+            if (profesional == null) {
+                throw new IllegalArgumentException("No existe un profesional con ID: " + id);
+            }
+
+            // Validaciones
+            if (nuevoNombre != null && !nuevoNombre.trim().isEmpty()) {
+                profesional.setNombre(nuevoNombre.trim());
+            } else {
+                throw new IllegalArgumentException("El nombre del profesional es obligatorio");
+            }
+            
+            if (nuevoApellido != null && !nuevoApellido.trim().isEmpty()) {
+                profesional.setApellido(nuevoApellido.trim());
+            } else {
+                throw new IllegalArgumentException("El apellido del profesional es obligatorio");
+            }
+            
+            if (nuevoDni > 0 && nuevoDni != profesional.getDni()) {
+                // Verificar si el nuevo DNI ya existe (si es diferente al actual)
+                Profesional profesionalConMismoDni = profesionalDAO.buscarPorDni(nuevoDni);
+                if (profesionalConMismoDni != null && profesionalConMismoDni.getId() != id) {
+                    throw new IllegalArgumentException("Ya existe otro profesional con el DNI: " + nuevoDni);
+                }
+                profesional.setDni(nuevoDni);
+            }
+            
+            if (nuevaEspecialidad != null && !nuevaEspecialidad.trim().isEmpty()) {
+                profesional.setEspecialidad(nuevaEspecialidad.trim());
+            } else {
+                throw new IllegalArgumentException("La especialidad es obligatoria");
+            }
+
+            // Actualizar en la base de datos
+            profesionalDAO.actualizar(profesional);
+            return profesional;
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al modificar el profesional: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Elimina un profesional (con validaciones)
+     */
+    public boolean eliminarProfesional(int id) {
+        try {
+            // Primero verificar si el profesional existe
+            Profesional profesional = profesionalDAO.buscarPorId(id);
+            if (profesional == null) {
+                throw new IllegalArgumentException("No existe un profesional con ID: " + id);
+            }
+
+            // Verificar si el profesional tiene turnos activos
+            // Nota: Necesitarás inyectar o acceder al TurnoController para esta validación
+            // Por ahora, vamos a eliminar directamente y manejar la restricción de clave foránea en la BD
+            
+            profesionalDAO.eliminar(id);
+            return true;
+
+        } catch (SQLException e) {
+            // Si hay error por restricción de clave foránea (turnos asociados)
+            if (e.getMessage().contains("FOREIGN KEY constraint failed")) {
+                throw new IllegalStateException("No se puede eliminar el profesional porque tiene turnos asociados. "
+                    + "Primero debe cancelar o reasignar los turnos.");
+            }
+            throw new RuntimeException("Error al eliminar profesional: " + e.getMessage(), e);
         }
     }
 
@@ -126,7 +203,7 @@ public class ProfesionalController {
     }
 
     /**
-     * Actualiza un profesional existente
+     * Actualiza un profesional existente (método alternativo)
      */
     public void actualizarProfesional(Profesional profesional) {
         if (profesional == null) {
@@ -137,17 +214,6 @@ public class ProfesionalController {
             profesionalDAO.actualizar(profesional);
         } catch (SQLException e) {
             throw new RuntimeException("Error al actualizar profesional: " + e.getMessage(), e);
-        }
-    }
-
-    /**
-     * Elimina un profesional
-     */
-    public void eliminarProfesional(int id) {
-        try {
-            profesionalDAO.eliminar(id);
-        } catch (SQLException e) {
-            throw new RuntimeException("Error al eliminar profesional: " + e.getMessage(), e);
         }
     }
 }

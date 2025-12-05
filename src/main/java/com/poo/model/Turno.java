@@ -71,5 +71,15 @@ public class Turno {
     public void cambiarEstado(EstadoDeTurno nuevoEstado) {
     this.estado = nuevoEstado;
     }
-    
+
+    //Verificar solapamiento de turnos
+    public boolean seSolapaCon (Turno turno){
+        if (this.id == turno.getId()){ //validamos que si los turnos tienen mismo ID, no se solapan
+            return false;
+        }
+        //validacion de las fechas
+        return this.fechaYHoraInicio.isBefore(turno.getfechaYHoraFin()) &&
+                this.fechaYHoraFin.isAfter(turno.fechaYHoraInicio);
+    }
+
 }
