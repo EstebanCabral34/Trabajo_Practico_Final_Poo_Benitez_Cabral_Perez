@@ -21,10 +21,17 @@ public class ProfesionalService {
         if (buscarProfesionalPorDni(dni) != null) {
             throw new IllegalArgumentException("ERROR: Ya existe un profesional con el DNi:" + dni + ".");
         }
+        if (String.valueOf(dni).length() <= 6 || String.valueOf(dni).length() >= 9) { // validamos que se ingrese un dni con al menos 7 caracteres y no mayor a 9.
+            throw new IllegalArgumentException("DNI debe tener al menos 7 caracteres.");
+        }
+        if (buscarProfesionalPorDni(dni) != null) {
+            throw new IllegalArgumentException("ERROR: Ya existe un profesional con el DNI:" + dni + ".");
+        }
         Profesional nuevoProfesional = new Profesional(proxId++, nombre, apellido, dni, especialidad, agendas);
         listaProfesionales.add(nuevoProfesional);
         return nuevoProfesional;
     }
+
 
     // Baja de profesional /////////////////////////////////////////////////////////////
     public boolean bajaProfesional (int dni, TurnoService turnoService) {
